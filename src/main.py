@@ -47,7 +47,8 @@ def update():
    if y > ground:
        y = ground
        vy = -vy * BOUNCE # reverse and lose some energy
-   figure_frame = int(pyxel.frame_count / 4) % 4
+   if b >=0:
+      figure_frame = int(pyxel.frame_count / 4) % 4
 
 def draw():
    pyxel.cls(1)
