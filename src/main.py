@@ -5,6 +5,7 @@ BOUNCE = .75
 W, H = 160, 120
 a = 0
 b = 1
+Shooting = False
 
 pyxel.init(W, H, "Some name")
 
@@ -29,12 +30,12 @@ figure_frame = 0
 
 
 # initial position and velocity
-x, y = W // 2, H // 2
+x, y = W // 2, H // 1.5
 vx, vy = 0, 0
 
 #pyxel.rect(1, 2, 3, 4, 5)
 def update():
-   global x, y, vx, vy, a, b, figure_frame
+   global x, y, vx, vy, a, b, figure_frame, Shooting, BOUNCE
 
    # Apply gravity
    vy += GRAVITY
@@ -44,9 +45,16 @@ def update():
       b -=0.01
    # Bounce when hitting the ground
    ground = H - 5 #to change if ball radius changes - radius + 1
+   if Shooting == False:
+      BOUNCE = 1
+   else: BOUNCE = .75
    if y > ground:
        y = ground
        vy = -vy * BOUNCE # reverse and lose some energy
+   if pyxel.btnp(pyxel.KEY_D):
+      b += .2
+   if pyxel.btnp(pyxel.KEY_A):
+     b -=.2 
    if b >=0:
       figure_frame = int(pyxel.frame_count / 4) % 4
 
