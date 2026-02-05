@@ -123,7 +123,8 @@ def update():
    if b == -0:#??? somehow speed comes to rest at "-0" - this should fix???
       b = 0
     
-
+   if pyxel.btn(pyxel.KEY_W):
+      vy = vy - 1.5
 
    #if Shooting:
       #pyxel.cls(1)
