@@ -16,6 +16,7 @@ spacebar = False
 variables = True
 wallbounce = .75
 draw_line = False
+Score = 0
 
 pyxel.init(W, H, "Some name")
 
@@ -45,14 +46,19 @@ vx, vy = 0, 0
 
 #pyxel.rect(1, 2, 3, 4, 5)
 def update():
-   global x, y, vx, vy, a, b, player_x, player_y, figure_frame, Shooting, switchbnce, Shootingforce, Shootingangle, draw_line, BOUNCE, spacebar, variables
+   global x, y, vx, vy, a, b, Score, player_x, player_y, figure_frame, Shooting, switchbnce, Shootingforce, Shootingangle, draw_line, BOUNCE, spacebar, variables
 
    # Apply gravity
    vy += GRAVITY
    y += vy
+   x += vx
+   if y == 155:
+      vx = vx/2 
    a += b
-   if b >= 0:
-      b -=0.01
+   if b >= .02:
+      b -=0.02
+   if b <= -.02:
+      b += 0.02
    # Bounce when hitting the ground
    ground = H - 5 #to change if ball radius changes - radius + 1
 
@@ -83,7 +89,7 @@ def update():
    #if pyxel.btn(pyxel.KEY_SPACE):
       #pyxel.line(a + x - 43, 62, 75, -50, 3)
    if pyxel.btn(pyxel.KEY_S):
-      b = b / 2
+      b = b / 1.5
       if b >= -.5 and b <= .5:
          b = 0
  
@@ -118,24 +124,26 @@ def update():
    if pyxel.btnp(pyxel.KEY_V):
       variables = not variables
 
-   if b == 0:
-      figure_frame = 0
    if b == -0:#??? somehow speed comes to rest at "-0" - this should fix???
       b = 0
+   if b == 0:
+      figure_frame = 0
     
-   if pyxel.btn(pyxel.KEY_W):
+   if pyxel.btn(pyxel.KEY_W): # DELETE EVENTUALLY
       vy = vy - 1.5
+   if pyxel.btn(pyxel.KEY_E): #DELETE EVENTUALLY
+      vx = vx + 1.5
 
-   #if Shooting:
-      #pyxel.cls(1)
-      #pyxel.text(50, 10, f"OH SHOOT!!!!", 9)
-      #stuff. . . .
-      #time.sleep(2)
-      #Shooting = False
-      #Shootingforce = 0
-      #Shootingangle = 0
-      #don't uncomment this. . . .
+   if x > 154 and x < 157:# backboard bounce
+      vx = vx * -.75
 
+   if x > 132 and x < 134 and y > 40 and y < 51:# Net bounce????????
+      vx = vx * -.75
+
+   if Shooting and not switchbnce == bncemax:
+      vx = math.cos(Shootingangle)
+      vy = math.sin(Shootingangle)
+      
 
 
 def draw_shot_angle():
@@ -168,12 +176,14 @@ def draw(): ###### ALL drawings must occur in this function or will be erased...
       pyxel.text(10, 10 + line_height * 4, f"switchbnce: {switchbnce}, BOUNCE: {BOUNCE}", col=text_col)# Temp
       pyxel.text(10, 10 + line_height * 5, f"spacebar: {spacebar}", col=text_col)# ora
       pyxel.text(10, 10 + line_height * 6, f"figure_frame: {figure_frame}", col=text_col)# ry
+
    if Shooting == False:
       pyxel.circ(x + a, y, 4, 9) #
+      draw_figure(x + a - 42            , 62, figure_frame) # Position of figure
    else: 
-      pyxel.circ(x + a, y, 4, 9) # fill in what ball does when thrown
-   draw_figure(x + a - 42            , 62, figure_frame) # Position of figure
-   if draw_line:
+      pyxel.circ(x + a, y , 4, 9) # fill in what ball does when thrown
+      #draw_figure(x + a - 42            , 62, figure_frame) # Position of figure
+   if draw_line and not Shooting:
       draw_shot_angle()
    netxpos = 155
    pyxel.line(netxpos, 120, netxpos, 50, 12) #Post
